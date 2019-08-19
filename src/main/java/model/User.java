@@ -8,6 +8,42 @@ public class User {
     private String email;
     private String phone_number;
     private String resident_address;
+    private String state;
+    private String age;
+    private String gender;
+    private String salary;
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getSalary() {
+        return salary;
+    }
+
+    public void setSalary(String salary) {
+        this.salary = salary;
+    }
 
     public User(String id, String name, String email, String phone_number, String resident_address) {
         this.id = id;
@@ -15,6 +51,19 @@ public class User {
         this.email = email;
         this.phone_number = phone_number;
         this.resident_address = resident_address;
+    }
+
+    public User(String id, String name, String email, String phone_number, String resident_address, String state,
+                String age, String gender, String salary) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone_number = phone_number;
+        this.resident_address = resident_address;
+        this.state = state;
+        this.age = age;
+        this.gender = gender;
+        this.salary = salary;
     }
 
     public User() {
