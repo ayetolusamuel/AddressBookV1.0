@@ -21,15 +21,13 @@ import java.util.Arrays;
 
 public class UserView extends JFrame implements ActionListener {
     private final JScrollPane addressScrollPane;
-    private JLabel mLabelId, mLabelName, mLabelEmail, mLabelPhoneNumber, mLabelResidentAddress,mLabelSalary,mLabelAge,mLabelLocation,mLabelSex;
+    private JLabel mLabelId, mLabelName, mLabelEmail, mLabelPhoneNumber, mLabelResidentAddress, mLabelSalary, mLabelAge, mLabelLocation, mLabelSex;
     private JButton mJButtonCheck, mJButtonSave, mJButtonDelete, mJButtonUpdate, mJButtonRead, mJButtonExit;
-    private JTextField mFieldId, mFieldName, mFieldEmail, mFieldPhoneNumber,mFieldSalary;
+    private JTextField mFieldId, mFieldName, mFieldEmail, mFieldPhoneNumber, mFieldSalary;
     private JTextArea mFieldResidentAddress;
-    private String[] state={"select","Abia" ,"Adamawa","Akwa-Ibom","Bauchi","Bayelsa","Benue","Borno","Cross-River","Delta","Ekiti","Ebonyi","Edo","Enugu","Gombe","Imo","Jigawa","Kaduna","Kastina","Kano","Kebbi","Kogi","Kwara","Lagos","Nassarawa","Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers","Sokoto","Taraba","Yobe","Zamfara","FCT"};
-
-
-    private String[] sexSelection ={"male","female"};
-    private JComboBox<String> mJComboBoxAge,mComboBoxSex,mFieldLocation;
+    private String[] state = {"select", "Abia", "Adamawa", "Akwa-Ibom", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross-River", "Delta", "Ekiti", "Ebonyi", "Edo", "Enugu", "Gombe", "Imo", "Jigawa", "Kaduna", "Kastina", "Kano", "Kebbi", "Kogi", "Kwara", "Lagos", "Nassarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara", "FCT"};
+    private String[] sexSelection = {"male", "female"};
+    private JComboBox<String> mJComboBoxAge, mComboBoxSex, mFieldLocation;
     private JPanel pane;
     private DatabaseConnection mConnection = new DatabaseConnection();
 
@@ -113,14 +111,18 @@ public class UserView extends JFrame implements ActionListener {
         mFieldPhoneNumber = new JTextField();
         mFieldPhoneNumber.setBorder(BorderFactory.createBevelBorder(1, new Color(192, 192, 255), new Color(192, 192, 255)));
         pane.add(mFieldPhoneNumber).setBounds(100, 162, 200, 25);
-        mFieldPhoneNumber.addKeyListener (new KeyAdapter() {
-            public void keyTyped (KeyEvent ke) {
-                char c = ke.getKeyChar ();
-                if (! ( (c == KeyEvent.VK_BACK_SPACE))) {
+        mFieldPhoneNumber.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent ke) {
+                char c = ke.getKeyChar();
+                if (!((c == KeyEvent.VK_BACK_SPACE))) {
                     if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' ||
                             c == '5' || c == '6' || c == '7' || c == '8' || c == '9')) {
-                        getToolkit().beep ();
-                        ke.consume ();}}}});
+                        getToolkit().beep();
+                        ke.consume();
+                    }
+                }
+            }
+        });
 
 
         mLabelResidentAddress = new JLabel("Address: ");
@@ -140,56 +142,48 @@ public class UserView extends JFrame implements ActionListener {
 
         mLabelSalary = new JLabel("Salary");
         mLabelSalary.setForeground(Color.WHITE);
-        mLabelSalary.setFont(new Font("Times New Romans",Font.BOLD,20));
-        pane.add(mLabelSalary).setBounds(10,280,100,35);
-
+        mLabelSalary.setFont(new Font("Times New Romans", Font.BOLD, 20));
+        pane.add(mLabelSalary).setBounds(10, 280, 100, 35);
 
 
         mFieldSalary = new JTextField();
-        pane.add(mFieldSalary).setBounds(100,285,100,25);
+        pane.add(mFieldSalary).setBounds(100, 285, 100, 25);
 
 
         mLabelAge = new JLabel("Age");
         mLabelAge.setForeground(Color.WHITE);
-        mLabelAge.setFont(new Font("Times New Romans",Font.BOLD,20));
-        pane.add(mLabelAge).setBounds(300,280,100,35);
-
+        mLabelAge.setFont(new Font("Times New Romans", Font.BOLD, 20));
+        pane.add(mLabelAge).setBounds(300, 280, 100, 35);
 
 
         ArrayList<String> list = new ArrayList();
-        for (int i =1; i<=150; i++){
+        for (int i = 1; i <= 150; i++) {
             String age = String.valueOf(i);
             list.add(age);
             mJComboBoxAge = new JComboBox();
         }
         mJComboBoxAge.setModel(new DefaultComboBoxModel(list.toArray()));
-        pane.add(mJComboBoxAge).setBounds(350,287,70,25);
-
-
-
+        pane.add(mJComboBoxAge).setBounds(350, 287, 70, 25);
 
 
         mLabelLocation = new JLabel("State");
         mLabelLocation.setForeground(Color.white);
-        mLabelLocation.setFont(new Font("Times New Romans",Font.BOLD,20));
-        pane.add(mLabelLocation).setBounds(10,320,100,25);
+        mLabelLocation.setFont(new Font("Times New Romans", Font.BOLD, 20));
+        pane.add(mLabelLocation).setBounds(10, 320, 100, 25);
 
 
         mFieldLocation = new JComboBox<>(state);
-        pane.add(mFieldLocation).setBounds(100,320,100,25);
-
+        pane.add(mFieldLocation).setBounds(100, 320, 100, 25);
 
 
         mLabelSex = new JLabel("Sex");
         mLabelSex.setForeground(Color.white);
-        mLabelSex.setFont(new Font("Times New Romans",Font.BOLD,20));
-        pane.add(mLabelSex).setBounds(300,320,80,25);
+        mLabelSex.setFont(new Font("Times New Romans", Font.BOLD, 20));
+        pane.add(mLabelSex).setBounds(300, 320, 80, 25);
 
 
         mComboBoxSex = new JComboBox<>(sexSelection);
-        pane.add(mComboBoxSex).setBounds(350,320,70,25);
-
-
+        pane.add(mComboBoxSex).setBounds(350, 320, 70, 25);
 
 
         mJButtonCheck = new JButton(new ImageIcon("images/search.png"));
@@ -199,7 +193,7 @@ public class UserView extends JFrame implements ActionListener {
         mJButtonSave = new JButton("Create");
         mJButtonSave.addActionListener(this);
         pane.add(mJButtonSave).setBounds(10, 380, 74, 30);
-        mJButtonSave.setFont(new Font("Times New Romans",Font.BOLD,12));
+        mJButtonSave.setFont(new Font("Times New Romans", Font.BOLD, 12));
 
         mJButtonUpdate = new JButton("Update");
         mJButtonUpdate.setEnabled(false);
@@ -246,16 +240,15 @@ public class UserView extends JFrame implements ActionListener {
 
             id = Utils.generateId();
 
-            User user = new User(id,name,email,phone_number,address,state,age,gender,salary);
+            User user = new User(id, name, email, phone_number, address, state, age, gender, salary);
 
             if (validateText() && id.startsWith("set")) {
-               // User user = new User(id, name, email, phone_number, address);
-                if (!confirmId(id) ) {
+               if (!confirmId(id)) {
 
-                    if (!confirmBaseId(user)){
+                    if (!confirmBaseId(user)) {
                         System.out.println("user already registered");
                         clearText();
-                    }else{
+                    } else {
                         user.setId(Utils.generateId());
                         saveUserDetails(user);
                     }
@@ -302,7 +295,7 @@ public class UserView extends JFrame implements ActionListener {
             user.setEmail(email);
             user.setPhone_number(phone_number);
             user.setResident_address(address);
-            if (validateText() ) {
+            if (validateText()) {
                 updateUser(user);
             }
 
@@ -521,8 +514,6 @@ public class UserView extends JFrame implements ActionListener {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // JOptionPane.showOptionDialog(null,"are you sure, you want to delete  the user?","Delete User");
-
     }
 
     private void updateUser(User user) {
@@ -638,34 +629,6 @@ public class UserView extends JFrame implements ActionListener {
         addressScrollPane.setVisible(true);
 
 
-    }
-
-    private ArrayList<User> getInfo() {
-        ArrayList<User> arrayList = new ArrayList<>();
-
-        try {
-            String query = "SELECT * FROM users";
-            ResultSet resultSet = mConnection.getStatement().executeQuery(query);
-            User user = new User();
-            while (resultSet.next()) {
-                user.setId(resultSet.getString("id_number"));
-                user.setName(resultSet.getString("full_name"));
-                user.setEmail(resultSet.getString("email_address"));
-                user.setPhone_number(resultSet.getString("phone_number"));
-                user.setResident_address(resultSet.getString("resident_address"));
-                user.setState(resultSet.getString("state"));
-                user.setAge(resultSet.getString("age"));
-                user.setGender(resultSet.getString("gender"));
-                user.setSalary(resultSet.getString("salary"));
-
-
-                arrayList.add(user);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return arrayList;
     }
 
 

@@ -1,6 +1,8 @@
 package views;
 
 import database.DatabaseConnection;
+import model.User;
+import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -13,14 +15,36 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PrinterJob;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DisplayUSers extends JFrame {
+
+public class DisplayUSers extends JFrame implements ActionListener {
+    private final JTextField jTextField;
+    public String[] state = {"select", "Abia", "Adamawa", "Akwa-Ibom", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross-River", "Delta", "Ekiti", "Ebonyi", "Edo", "Enugu", "Gombe", "Imo", "Jigawa", "Kaduna", "Kastina", "Kano", "Kebbi", "Kogi", "Kwara", "Lagos", "Nassarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara", "FCT"};
+
+    private final JButton jButtonSearch;
+    private ArrayList<User> mUsers = new ArrayList<>();
+    private JComboBox<String> jComboBox;
     private JPanel main = new JPanel();
+    private String value = "Top 5";
     private Container c;
     private JTable table;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     private DatabaseConnection mConnection;
     private JButton printButton;
     private JButton cancleButton;
+    private JComboBox jComboBoxState;
+    private int index = 0;
+
 
     DisplayUSers() {
         mConnection = new DatabaseConnection();
@@ -31,10 +55,11 @@ public class DisplayUSers extends JFrame {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                setVisible(false);
                 UserView userView = new UserView();
                 userView.setVisible(true);
                 userView.setLocationRelativeTo(null);
-                setVisible(false);
+
             }
         });
         setResizable(false);
@@ -67,6 +92,57 @@ public class DisplayUSers extends JFrame {
 
 
         title.add(label);
+        String[] searchVar = {"Top 5", "Male", "Female", "below 5000", "above 5000", "Name", "All users"};
+        jComboBox = new JComboBox<>(searchVar);
+        main.add(jComboBox).setBounds(10, 10, 100, 25);
+        jComboBox.addActionListener(this);
+
+
+        jTextField = new JTextField();
+        PromptSupport.setPrompt("enter full name here!!!",jTextField);
+        main.add(jTextField).setBounds(120, 10, 150, 25);
+        jButtonSearch = new JButton("search");
+        jButtonSearch.setFont(new Font("New Times Romans", Font.BOLD, 10));
+        main.add(jButtonSearch).setBounds(280, 10, 70, 25);
+        jButtonSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String returnValue = getValue();
+                if (returnValue.equalsIgnoreCase("Top 5")) {
+                    String query = "SELECT * FROM users LIMIT 0,5";
+                    table.setModel(new UserTableModel(getInfo(query)));
+                } else if (returnValue.equalsIgnoreCase("Male")) {
+                    String gender = "male";
+                    String query = "select * from users where gender =" + "'" + gender + "'";
+                    table.setModel(new UserTableModel(getInfo(query)));
+                } else if (returnValue.equalsIgnoreCase("Female")) {
+                    String gender = "female";
+                    String query = "select * from users where gender =" + "'" + gender + "'";
+                    table.setModel(new UserTableModel(getInfo(query)));
+                } else if (returnValue.equalsIgnoreCase("below 5000")) {
+                    String query = "select * from users where salary <5000";
+                    table.setModel(new UserTableModel(getInfo(query)));
+                } else if (returnValue.equalsIgnoreCase("above 5000")) {
+                    String query = "select * from users where salary >5000";
+                    table.setModel(new UserTableModel(getInfo(query)));
+                } else if (returnValue.equalsIgnoreCase("all users")) {
+                    String query = "select * from users ";
+                    table.setModel(new UserTableModel(getInfo(query)));
+                } else if (returnValue.equalsIgnoreCase("name")) {
+                    String name = jTextField.getText();
+                    String query = "select * from users where full_name like " + "'" + "%" + name + "%" + "'";
+                    table.setModel(new UserTableModel(getInfo(query)));
+                }
+            }
+
+        });
+
+
+        if (value.equalsIgnoreCase("Top 5")) {
+            jTextField.setBounds(0, 0, 0, 0);
+            jButtonSearch.setBounds(120, 10, 70, 25);
+        }
+
         main.add("North", title);
         Icon prt = new ImageIcon("images//printer.png");
         printButton = new JButton("print", prt);
@@ -76,18 +152,19 @@ public class DisplayUSers extends JFrame {
         cancleButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
+                setVisible(false);
                 UserView userView = new UserView();
                 userView.setVisible(true);
                 userView.setLocationRelativeTo(null);
-                setVisible(false);
+
             }
         });
 
 
         printButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               PrinterJob printerJob = PrinterJob.getPrinterJob();
-               printerJob.printDialog();
+                PrinterJob printerJob = PrinterJob.getPrinterJob();
+                printerJob.printDialog();
 
             }
         });
@@ -97,20 +174,29 @@ public class DisplayUSers extends JFrame {
         butpan.add(cancleButton);
         butpan.setBackground(new Color(255, 197, 68));
         c.add("South", butpan);
+        c.add(main);
+        String query = "SELECT * FROM users";
+        populateTable(query);
+        displayTable();
+    }
+
+    private void populateTable(String query) {
         try {
 
-            ResultSet set = mConnection.getStatement().executeQuery("select * from users ");
+
+            ResultSet set = mConnection.getStatement().executeQuery(query);
             int row = 0;
             int i = 0;
             while (set.next()) {
                 row++;
             }
             DefaultTableModel model = new DefaultTableModel(new String[]{"id_number", "full_name", "email_address",
-                    "phone_number", "resident_address","state","age","gender","salary",}, row);
+                    "phone_number", "resident_address", "state", "age", "gender", "salary",}, row);
 
 
             table = new JTable(model);
-            set = mConnection.getStatement().executeQuery("select * from users");
+
+            set = mConnection.getStatement().executeQuery(query);
             while (set.next()) {
                 model.setValueAt(set.getString("id_number").trim(), i, 0);
                 model.setValueAt(set.getString("full_name").trim(), i, 1);
@@ -127,6 +213,69 @@ public class DisplayUSers extends JFrame {
             table = new JTable(model);
         } catch (Exception ex) {
         }
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String values;
+
+        jComboBoxState = new JComboBox(state);
+
+
+        jComboBox = (JComboBox<String>) e.getSource();
+        values = (String) jComboBox.getSelectedItem();
+        setValue(values);
+        if (values.equalsIgnoreCase("Top 5") || values.equalsIgnoreCase("male")
+                || values.equalsIgnoreCase("female") || values.equalsIgnoreCase("below 5000")
+                || values.equalsIgnoreCase("above 5000")) {
+            main.add(jComboBoxState).setBounds(0, 0, 0, 0);
+            jTextField.setBounds(0, 0, 0, 0);
+            main.add(jButtonSearch).setBounds(120, 10, 70, 25);
+            // return;
+        } else if (values.equalsIgnoreCase("state")) {
+            main.add(jTextField).setBounds(0, 0, 0, 0);
+            main.add(jComboBoxState).setBounds(120, 10, 150, 25);
+            main.add(jButtonSearch).setBounds(0, 0, 0, 0);
+
+        } else if (values.equalsIgnoreCase("name")) {
+            main.add(jComboBoxState).setBounds(0, 0, 0, 0);
+            main.add(jTextField).setBounds(120, 10, 150, 25);
+            main.add(jButtonSearch).setBounds(280, 10, 70, 25);
+
+        }
+
+    }
+
+    private List<User> getInfo(String url) {
+        List<User> arrayList = new ArrayList<>();
+
+        try {
+
+
+            ResultSet resultSet = mConnection.getStatement().executeQuery(url);
+            while (resultSet.next()) {
+
+                arrayList.add(new User(resultSet.getString("id_number"),
+                        resultSet.getString("full_name"),
+                        resultSet.getString("email_address"),
+                        resultSet.getString("phone_number"),
+                        resultSet.getString("resident_address"),
+                        resultSet.getString("state"),
+                        resultSet.getString("age"),
+                        resultSet.getString("gender"),
+                        resultSet.getString("salary")
+                ));
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return arrayList;
+    }
+
+    private void displayTable() {
         JScrollPane sp = new JScrollPane(table);
         main.add(sp);
         table.setSelectionMode(0);
@@ -141,5 +290,9 @@ public class DisplayUSers extends JFrame {
     }
 
 
-
+    public static void main(String[] args) {
+        DisplayUSers displayUSers = new DisplayUSers();
+        displayUSers.setVisible(true);
+        displayUSers.setLocationRelativeTo(null);
+    }
 }

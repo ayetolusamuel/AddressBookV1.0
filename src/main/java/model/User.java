@@ -45,14 +45,6 @@ public class User {
         this.salary = salary;
     }
 
-    public User(String id, String name, String email, String phone_number, String resident_address) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.phone_number = phone_number;
-        this.resident_address = resident_address;
-    }
-
     public User(String id, String name, String email, String phone_number, String resident_address, String state,
                 String age, String gender, String salary) {
         this.id = id;
