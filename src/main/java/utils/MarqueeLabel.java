@@ -4,7 +4,6 @@ import javax.swing.JLabel;
 public class MarqueeLabel extends JLabel {
     public static int LEFT_TO_RIGHT = 1;
     public static int RIGHT_TO_LEFT = 2;
-    String text;
     int Option;
     int Speed;
     public MarqueeLabel(String text, int Option, int Speed) {

@@ -146,8 +146,21 @@ public class UserView extends JFrame implements ActionListener {
         pane.add(mLabelSalary).setBounds(10, 280, 100, 35);
 
 
+
         mFieldSalary = new JTextField();
         pane.add(mFieldSalary).setBounds(100, 285, 100, 25);
+        mFieldSalary.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent ke) {
+                char c = ke.getKeyChar();
+                if (!((c == KeyEvent.VK_BACK_SPACE))) {
+                    if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' ||
+                            c == '5' || c == '6' || c == '7' || c == '8' || c == '9')) {
+                        getToolkit().beep();
+                        ke.consume();
+                    }
+                }
+            }
+        });
 
 
         mLabelAge = new JLabel("Age");
@@ -275,7 +288,10 @@ public class UserView extends JFrame implements ActionListener {
                     mFieldEmail.setText(user.getEmail());
                     mFieldPhoneNumber.setText(user.getPhone_number());
                     mFieldResidentAddress.setText(user.getResident_address());
-
+                    mFieldSalary.setText(user.getSalary());
+                    mFieldLocation.setSelectedItem(user.getState());
+                    mJComboBoxAge.setSelectedItem(user.getAge());
+                    mComboBoxSex.setSelectedItem(user.getGender());
                     mJButtonUpdate.setEnabled(true);
                     mJButtonDelete.setEnabled(true);
                     mJButtonRead.setEnabled(true);
@@ -295,6 +311,12 @@ public class UserView extends JFrame implements ActionListener {
             user.setEmail(email);
             user.setPhone_number(phone_number);
             user.setResident_address(address);
+            user.setState(state);
+            user.setAge(age);
+            user.setGender(gender);
+            user.setSalary(salary);
+
+
             if (validateText()) {
                 updateUser(user);
             }
@@ -333,6 +355,9 @@ public class UserView extends JFrame implements ActionListener {
             flag = false;
         } else if (mFieldSalary.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Salary can't be empty..");
+            flag = false;
+        }else if (mFieldLocation.getSelectedIndex()==0) {
+            JOptionPane.showMessageDialog(null, "invalid selection..");
             flag = false;
         }
         return flag;
@@ -542,6 +567,7 @@ public class UserView extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(null, "Update Finished!");
             st.close();
             clearText();
+            mFieldId.setEnabled(true);
         } catch (SQLException ex) {
             System.err.println(ex.getMessage());
         }
@@ -577,59 +603,6 @@ public class UserView extends JFrame implements ActionListener {
         return userID;
     }
 
-    private void disableAllComponents() {
-        mJButtonExit.setVisible(false);
-        mJButtonRead.setVisible(false);
-        mJButtonDelete.setVisible(false);
-        mJButtonUpdate.setVisible(false);
-        mJButtonCheck.setVisible(false);
-        mJButtonSave.setVisible(false);
-
-        mLabelResidentAddress.setVisible(false);
-        mLabelPhoneNumber.setVisible(false);
-        mLabelEmail.setVisible(false);
-        mLabelName.setVisible(false);
-        mLabelId.setVisible(false);
-
-
-        mFieldId.setVisible(false);
-        mFieldResidentAddress.setVisible(false);
-        mFieldEmail.setVisible(false);
-        mFieldPhoneNumber.setVisible(false);
-        mFieldName.setVisible(false);
-
-        mFieldResidentAddress.setVisible(false);
-        addressScrollPane.setVisible(false);
-
-
-    }
-
-    private void enableAllComponents() {
-        mJButtonExit.setVisible(true);
-        mJButtonRead.setVisible(true);
-        mJButtonDelete.setVisible(true);
-        mJButtonUpdate.setVisible(true);
-        mJButtonCheck.setVisible(true);
-        mJButtonSave.setVisible(true);
-
-        mLabelResidentAddress.setVisible(true);
-        mLabelPhoneNumber.setVisible(true);
-        mLabelEmail.setVisible(true);
-        mLabelName.setVisible(true);
-        mLabelId.setVisible(true);
-
-
-        mFieldId.setVisible(true);
-        mFieldResidentAddress.setVisible(true);
-        mFieldEmail.setVisible(true);
-        mFieldPhoneNumber.setVisible(true);
-        mFieldName.setVisible(true);
-
-        mFieldResidentAddress.setVisible(true);
-        addressScrollPane.setVisible(true);
-
-
-    }
 
 
     public static void main(String[] args) {

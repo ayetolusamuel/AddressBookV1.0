@@ -3,11 +3,8 @@ package views;
 import database.DatabaseConnection;
 import model.User;
 import org.jdesktop.swingx.prompt.PromptSupport;
-
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,15 +18,15 @@ import java.util.List;
 
 public class DisplayUSers extends JFrame implements ActionListener {
     private final JTextField jTextField;
-    public String[] state = {"select", "Abia", "Adamawa", "Akwa-Ibom", "Bauchi", "Bayelsa", "Benue", "Borno", "Cross-River", "Delta", "Ekiti", "Ebonyi", "Edo", "Enugu", "Gombe", "Imo", "Jigawa", "Kaduna", "Kastina", "Kano", "Kebbi", "Kogi", "Kwara", "Lagos", "Nassarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara", "FCT"};
-
     private final JButton jButtonSearch;
-    private ArrayList<User> mUsers = new ArrayList<>();
     private JComboBox<String> jComboBox;
     private JPanel main = new JPanel();
     private String value = "Top 5";
     private Container c;
     private JTable table;
+    private DatabaseConnection mConnection;
+    private JButton printButton,cancleButton;
+
 
     public String getValue() {
         return value;
@@ -38,12 +35,6 @@ public class DisplayUSers extends JFrame implements ActionListener {
     public void setValue(String value) {
         this.value = value;
     }
-
-    private DatabaseConnection mConnection;
-    private JButton printButton;
-    private JButton cancleButton;
-    private JComboBox jComboBoxState;
-    private int index = 0;
 
 
     DisplayUSers() {
@@ -149,24 +140,20 @@ public class DisplayUSers extends JFrame implements ActionListener {
         printButton.setBackground(Color.white);
         printButton.setToolTipText("printButton");
         cancleButton = new JButton("Exit");
-        cancleButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        cancleButton.addActionListener(e -> {
 
-                setVisible(false);
-                UserView userView = new UserView();
-                userView.setVisible(true);
-                userView.setLocationRelativeTo(null);
+            setVisible(false);
+            UserView userView = new UserView();
+            userView.setVisible(true);
+            userView.setLocationRelativeTo(null);
 
-            }
         });
 
 
-        printButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                PrinterJob printerJob = PrinterJob.getPrinterJob();
-                printerJob.printDialog();
+        printButton.addActionListener(e-> {
+            PrinterJob printerJob = PrinterJob.getPrinterJob();
+            printerJob.printDialog();
 
-            }
         });
         cancleButton.setToolTipText("Exit");
         JPanel butpan = new JPanel();
@@ -219,43 +206,26 @@ public class DisplayUSers extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String values;
-
-        jComboBoxState = new JComboBox(state);
-
-
         jComboBox = (JComboBox<String>) e.getSource();
         values = (String) jComboBox.getSelectedItem();
         setValue(values);
         if (values.equalsIgnoreCase("Top 5") || values.equalsIgnoreCase("male")
                 || values.equalsIgnoreCase("female") || values.equalsIgnoreCase("below 5000")
-                || values.equalsIgnoreCase("above 5000")) {
-            main.add(jComboBoxState).setBounds(0, 0, 0, 0);
-            jTextField.setBounds(0, 0, 0, 0);
+                || values.equalsIgnoreCase("above 5000")|| values.equalsIgnoreCase("all users")) {
+          jTextField.setBounds(0, 0, 0, 0);
             main.add(jButtonSearch).setBounds(120, 10, 70, 25);
-            // return;
-        } else if (values.equalsIgnoreCase("state")) {
-            main.add(jTextField).setBounds(0, 0, 0, 0);
-            main.add(jComboBoxState).setBounds(120, 10, 150, 25);
-            main.add(jButtonSearch).setBounds(0, 0, 0, 0);
 
-        } else if (values.equalsIgnoreCase("name")) {
-            main.add(jComboBoxState).setBounds(0, 0, 0, 0);
+        }else if (values.equalsIgnoreCase("name")) {
             main.add(jTextField).setBounds(120, 10, 150, 25);
             main.add(jButtonSearch).setBounds(280, 10, 70, 25);
 
-        }
+        }}
 
-    }
-
-    private List<User> getInfo(String url) {
+    private List<User> getInfo(String query) {
         List<User> arrayList = new ArrayList<>();
-
         try {
-
-
-            ResultSet resultSet = mConnection.getStatement().executeQuery(url);
+            ResultSet resultSet = mConnection.getStatement().executeQuery(query);
             while (resultSet.next()) {
-
                 arrayList.add(new User(resultSet.getString("id_number"),
                         resultSet.getString("full_name"),
                         resultSet.getString("email_address"),
@@ -266,9 +236,7 @@ public class DisplayUSers extends JFrame implements ActionListener {
                         resultSet.getString("gender"),
                         resultSet.getString("salary")
                 ));
-            }
-
-        } catch (Exception ex) {
+            }} catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -290,9 +258,4 @@ public class DisplayUSers extends JFrame implements ActionListener {
     }
 
 
-    public static void main(String[] args) {
-        DisplayUSers displayUSers = new DisplayUSers();
-        displayUSers.setVisible(true);
-        displayUSers.setLocationRelativeTo(null);
-    }
 }
