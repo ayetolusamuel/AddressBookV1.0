@@ -3,6 +3,8 @@ package views;
 import database.DatabaseConnection;
 import model.User;
 import org.jdesktop.swingx.prompt.PromptSupport;
+import utils.UserTableModel;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package views;
+package utils;
 
 import model.User;
 import javax.swing.table.AbstractTableModel;
